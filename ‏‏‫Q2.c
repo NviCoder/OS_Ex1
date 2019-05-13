@@ -16,7 +16,7 @@
 #include <sys/fcntl.h>
 
 int childPID;
-//This 
+//This function will kill the son from the signal handler
 void killC(){
     exit(0);
 }
@@ -32,7 +32,7 @@ int main()
 { 
     //Signal for checking the string 
     signal(SIGUSR1, handleMD5);
-     signal(SIGUSR2, killC);
+    signal(SIGUSR2, killC);
     int fd1[2];  // Used to store two ends of first pipe 
     int fd2[2];  // Used to store two ends of second pipe 
     
