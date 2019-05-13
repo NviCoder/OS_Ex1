@@ -15,24 +15,29 @@
 #include <signal.h>
 #include <sys/fcntl.h>
 
-
+int childPID;
+//This 
+void killC(){
+    exit(0);
+}
 //signal handler for checking the MD5 string
 void handleMD5(int sig) 
  { 
     printf("Caught signal %d\n", sig); 
-    signal(SIGUSR1, handleMD5); 
+    kill(childPID,SIGUSR2);
+  
 
  }  
 int main() 
 { 
     //Signal for checking the string 
     signal(SIGUSR1, handleMD5);
-    
+     signal(SIGUSR2, killC);
     int fd1[2];  // Used to store two ends of first pipe 
     int fd2[2];  // Used to store two ends of second pipe 
     
     char input_str[100]; 
-    pid_t p; 
+    int p; 
   
     if (pipe(fd1)==-1) 
     { 
@@ -46,7 +51,8 @@ int main()
     } 
   
     scanf("%s", input_str); 
-    p = fork(); 
+    p = fork();
+    childPID = p;
   
     if (p < 0) 
     { 
@@ -57,8 +63,6 @@ int main()
     // Parent process 
     else if (p > 0) 
     { 
-        //Signal for checking the string 
-        signal(SIGUSR1, handleMD5);
         
         char concat_str[100]; 
   
@@ -69,29 +73,29 @@ int main()
         write(fd1[1], input_str, strlen(input_str)+1); 
         close(fd1[1]); 
   
-        // Wait for child to send a string 
-        wait(NULL); 
-        
-        
-        
+      
+     
         close(fd2[1]); // Close writing end of second pipe 
   
         // Read string from child, print it and close 
         // reading end. 
         read(fd2[0], concat_str, 100); 
+          // Wait for child to send a string 
+ 
+        wait(NULL); 
         printf("This is for you my dear%s\n", concat_str); 
         close(fd2[0]); 
         
-        while(1){
+        
         kill(p, SIGUSR1);
-        }       
-    } 
+              
+    }
   
     // child process 
     else
     {           
         close(fd1[1]);  // Close writing end of first pipe 
-  
+    int ppid=getppid();
         // Read a string using first pipe 
         char concat_str[100]; 
         read(fd1[0], concat_str, 100); 
@@ -102,9 +106,10 @@ int main()
   
         // Write concatenated string and close writing end 
         write(fd2[1], concat_str, strlen(concat_str)+1); 
+    
         close(fd2[1]); 
-        
-
-        exit(0); 
+        kill(ppid,SIGUSR1);
+      
     } 
+      exit(0); 
 } 
