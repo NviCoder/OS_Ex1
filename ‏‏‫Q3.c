@@ -1,10 +1,7 @@
 // This is C program to Q3 in our HW.
-// We use two pipes 
-// First pipe to send input string from parent 
-// Second pipe to send concatenated string from child 
-
 // Elad and Yoav
 // based on open source.
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
