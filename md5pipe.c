@@ -51,6 +51,7 @@ int main()
         fprintf(stderr, "Pipe Failed" ); 
         return 1; 
     } 
+    printf("plain text: ");
     scanf("%s", input_str); 
     p = fork();
     childPID = p;
