@@ -27,9 +27,10 @@ void killC(int sig){
 void handleMD5(int sig) 
  { 
    if(strlen(md5String)==32){
-    printf("encrypted by process %d: ",pid);
+    printf("encrypted by process %d: ",childPID);
     printf("%s\n",md5String);
     kill(childPID,SIGUSR2);
+    }
  }  
 int main() 
 { 
@@ -60,8 +61,7 @@ int main()
     } 
     // Parent process 
     else if (p > 0) 
-    { 
-        char concat_str[100]; 
+    {  
         close(fd1[0]);  // Close reading end of first pipe 
         // Write input string and close writing end of first 
         // pipe. 
@@ -70,7 +70,7 @@ int main()
         close(fd2[1]); // Close writing end of second pipe 
         // Read string from child, print it and close 
         // reading end. 
-        read(fd2[0], concat_str, 100); 
+        read(fd2[0],md5String, 100); 
         // Wait for child to send a string
         wait(NULL); 
         close(fd2[0]); 
@@ -88,7 +88,7 @@ int main()
         close(fd1[0]); 
         close(fd2[0]); 
         // Write concatenated string and close writing end 
-        write(fd2[1], md5(md5String).c_str(), 32); 
+        write(fd2[1], md5(concat_str).c_str(), 32); 
         close(fd2[1]); 
         kill(ppid,SIGUSR1);
     } 
