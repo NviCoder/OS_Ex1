@@ -11,13 +11,13 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/fcntl.h>
-
+#include <sys/wait.h>
 
 int cpid[5];         // holds the pids of the children
 int j;                    // index to cpid
 
 // function to activate when a signal is caught
-int sigCatcher() {  
+void sigCatcher(int sig) {  
   signal(SIGINT, sigCatcher);  // re-assign the signal catcher
   printf("PID %d caught one\n", getpid());
   if(j > -1)
